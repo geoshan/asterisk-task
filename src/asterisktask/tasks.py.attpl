@@ -1,0 +1,75 @@
+from time import sleep
+from asterisktask.setup.setting import AppConfig
+from asterisktask.lib.task import AsteriskHttpTask, TaskEngine,AsteriskTask
+from asteriskutils.tools import success_print,iprint,iprint,dprint,error_print
+
+'''
+本文件由Asterisk-Task框架生成
+'''
+
+class AsteriskDemoTask(AsteriskTask):
+    '''
+    一个基于第二代任务的默认演示任务
+    '''
+    description = 'First demo task for Asterisk Task V2'
+    # next_tasks = ['AsteriskTimerTask']
+    def run(self):
+        success_print('您已经成功创建项目，并运行在Asterisk-Task第二代框架V{}之上'.format(AppConfig['version']))
+
+
+class AsteriskTimerTask(AsteriskTask):
+    '''
+    一个基于第二代任务的定时演示任务
+    '''
+    description = 'First demo task with timer for Asterisk Task V2'
+    is_loop = True
+    timer = {
+        'period': 10,
+        'fixed_time':['21:24']
+    }
+    def run(self):
+        success_print('第二代定时任务，运行在Asterisk-Task V{}之上'.format(AppConfig['version']))
+        success_print('定时任务执行完成')
+        
+class AsteriskInitTask(AsteriskTask):
+    '''
+    一个默认的初始化任务
+    '''
+    def run(self):
+        success_print('您已运行项目初始化任务，并运行在Asterisk-Task框架的{}之上'.format(AppConfig['version']))
+
+class AsteriskTestThreadTask(AsteriskTask):
+    """
+    用于测试V2 Task多线程任务
+    """
+    threading = True
+
+    def run(self):
+        i=0
+        while (i< 10):
+            iprint(f'V2测试多线程，等待{i}')
+            sleep(1)
+            i+=1
+'''
+以下为V1.X版的Task，需要AppConfig.json文件进行相关配置
+将在V2.X的后续版本中逐步淘汰
+'''
+
+
+
+class AsteriskTestTask(TaskEngine):
+    '''
+    一个默认的测试项目
+    '''
+    def run(self):
+        success_print('您已经成功创建项目，并运行在Asterisk-Task框架的{}之上'.format(AppConfig['version']))
+class TestThreadTask(TaskEngine):
+    """
+    用于测试多线程任务
+    """
+    def run(self):
+        i=0
+        while (i< 10):
+            info_print(f'测试多线程，等待{i}')
+            sleep(1)
+            i+=1

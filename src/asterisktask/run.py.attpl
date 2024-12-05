@@ -1,0 +1,40 @@
+import argparse
+from asterisktask.main import Asterisk as {project_name}
+from {project_name}.setting import load_project_setting
+from asterisktask.setup.setting import AppConfig
+
+'''
+{project_name}应用的默认入口
+在当前目录下，在命令行中启动方法：
+$> python3 run_{project_name}.py
+
+如需了解命令行的细节，可以输入：
+$> python3 run_{project_name}.py -h
+
+如需要打印调试信息，即显示dprint()，可以输入：
+$> python3 run_{project_name}.py -debug=True
+
+如需启动GUI界面，可以输入:
+$> python3 run_{project_name}.py -gui=True
+注：GUI界面暂时没有实现
+
+注：本应用需要Python3.10以上支持
+'''
+def main()->None:
+    parser = argparse.ArgumentParser(description='{project_name}应用的命令行入口参数')
+    parser.add_argument('-gui', metavar='G', type=str, default='False', \
+        help='-gui=True时将启动GUI界面；默认为False,只在命令行运行。')
+    
+    parser.add_argument('-daemon', metavar='G', type=bool, default=False, \
+        help='-daemon=True时，适用在后台守护进程运行，降低CPU占用率。')
+    
+    parser.add_argument('-debug', metavar='D', type=str, default='True', \
+        help='-debug=True时将打印调试信息，即执行dprint()；默认为True,打印调试信息。')
+    
+    gui = True  if parser.parse_args().gui == 'True' else False
+    AppConfig['debug'] = 1  if parser.parse_args().debug == 'True' else False
+    load_project_setting()
+    {project_name}(gui,parser.parse_args().daemon).main()
+
+if  __name__ == "__main__":
+    main()

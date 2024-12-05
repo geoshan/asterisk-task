@@ -1,0 +1,26 @@
+{
+    "version":"2.2.0",
+    "author":"Asterisk-Task Dev Team",
+    "email":"geoshan@163.com",
+    "debug": 1,
+    "prompt":"Asterisk-task > ",
+    "log":{
+        "log_level":"DEBUG",
+        "log_path":"{App}/log",
+        "log_file_name":"%Y-%m-%d",
+        "log_format":"%(asctime)s - %(levelname)s - %(message)s"
+    },
+    "connection_timeout":30,
+    "logo_text_file":"logo.attpl",
+    "title_text_file":"title.attpl",
+    "errors":{
+        "404":"服务器接口不存在 ，请请确认服务器配置后再试。",
+        "500":"服务器接口不存在 ，或者http api的方法不支持",
+        "504":"ConnectTimeout -- 请稍后再试",
+        "501":"服务器可能未启动 ，请稍后再试。",
+        "502":"无法连接服务器 ，请稍后再试。",
+        "503":"ChunkedEncodingError -- 请稍后再试",
+        "509":"Unfortunately -- 请稍后再试"
+    }
+
+}

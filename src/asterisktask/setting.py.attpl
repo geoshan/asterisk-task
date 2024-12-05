@@ -1,0 +1,33 @@
+from asteriskutils.tools import wprint
+import os,json,sys
+
+
+def load_project_setting():
+    '''
+    在项目运行启动时，先将项目配置参数载入
+    '''
+    from asterisktask.setup.setting import AppConfig
+    app_conf_path = os.path.dirname(os.path.abspath(__file__))
+    try:
+        with open(os.path.join(app_conf_path, 'AppConfig.json'),'r',encoding='utf8') as fp:
+            app_conf_path = json.load(fp)
+            for k,v in app_conf_path.items():
+                AppConfig[k] = v
+        if os.path.isfile(os.path.join(os.path.dirname(os.path.abspath(__file__)), \
+            AppConfig.get('title_text_file') if AppConfig.get('title_text_file') else 'fake.fake')):
+            with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), AppConfig.get('title_text_file')),"r",encoding='utf8') as fp:
+                AppConfig['title_text'] = fp.read()
+        if os.path.isfile(os.path.join(os.path.dirname(os.path.abspath(__file__)), \
+            AppConfig.get('logo_text_file') if AppConfig.get('logo_text_file') else 'fake.fake')):
+            with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), AppConfig.get('logo_text_file')),"r",encoding='utf8') as fp:
+                AppConfig['logo_text'] = fp.read()
+            # dprint(AppConfig)
+    except FileNotFoundError:
+        wprint('应用目录下的配置文件AppConfig.json不存在，启用默认配置。')
+    except json.decoder.JSONDecodeError:
+        print(f'\033[31mAppConfig.json的格式有误！\033[0m')
+        sys.exit(1)
+    finally:
+        fp.close()
+    app_conf_path = os.path.dirname(os.path.abspath(__file__)) # 调试中
+    AppConfig['log']['log_path'] = AppConfig['log']['log_path'].replace("{App}",app_conf_path)

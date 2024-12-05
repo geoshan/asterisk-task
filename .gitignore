@@ -1,0 +1,14 @@
+__pycache__
+*.pyc
+.pypirc
+.DS_Store
+.history
+test*.*
+build
+dist
+*egg*
+asterisk_dev
+run_aster*.*
+*.db
+*.pdparams
+.initat

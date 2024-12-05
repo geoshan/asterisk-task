@@ -1,0 +1,25 @@
+{
+    "app_name":"{project_name}",
+    "app_description":"{project_name} description",
+    "app_author":"Unknown",
+    "app_email":"unknown@abc.com",
+    "task_module":"{project_name}.tasks",
+    "init_task":"AsteriskInitTask",
+    "default_task":"AsteriskDemoTask",
+    "app_version":"0.0.1",
+    "prompt":"{project_name} >",
+    "connection_timeout":30,
+    "tasks":{
+        "default_task":{
+            "description":"Asterisk-Task 默认任务",
+            "task_class":"AsteriskTestTask"
+        },
+        "test_thread_task":{
+            "description":"测试多线程任务",
+            "task_class":"TestThreadTask",
+            "threading":1,
+            "use_api":0
+        }
+    }
+    
+}

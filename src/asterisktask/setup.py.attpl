@@ -1,0 +1,64 @@
+from setuptools import setup,find_packages
+from asterisktask.setup.setting import AppConfig
+from {project_name}.setting import load_project_setting
+import time
+
+'''
+1.0版之前将只提供setup.py文件，setup.cfg文件将在后续版本提供
+'''
+load_project_setting()
+build_no = time.strftime('%m%d.%H%M',time.localtime())
+# 该版本号将在后续版本中以package的属性实现，以便于setup.cfg文件方便使用
+
+setup(
+    name="{project_name}",  #pypi中的名称，pip或者easy_install安装时使用的名称
+    version="{}.{}".format(AppConfig['app_version'],build_no),
+    author="AppConfig['app_author']",
+    author_email="AppConfig['app_email']",
+    description=("AppConfig['app_description']"),
+    license="MIT",
+    keywords="Gitee task reminder,Gitee task automation",
+    packages=find_packages(exclude=['build','dist','*egg*']),  # 需要打包的目录列表，排除测试项目以及build之后产生的目录
+
+    # 需要安装的依赖
+    install_requires=[
+        'asterisk-task>=1.0'
+    ],
+    include_package_data=True,
+
+
+    package_data={
+        # If any package contains *.json or *.attpl or *.config files, include them:
+        "": ["*.json", "*.attpl","*.config"]    
+    },
+
+
+    # Python版本的要求
+    python_requires='>=3.8.5',
+
+
+    platforms='Independent',
+
+    # 添加这个选项，是为了在安装后，可以使用命令行自动生成项目文件和目录，以及目录下的默认配置文件等
+    # 注意：模块与函数之间是冒号:
+    entry_points={'console_scripts': [
+        '{project_name} = run_{project_name}:main',
+    ]},
+
+    # long_description=read('README.md'), # 本段代码将在编辑readme后使用
+    classifiers=[  # 程序的所属分类列表
+        "Development Status :: 3 - Alpha",
+        "Topic :: Utilities",
+        "License :: OSI Approved :: MIT License",
+        "Environment :: Command Line Tool",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10"
+    ],
+    # 此项需要，否则卸载时报windows error
+    zip_safe=False
+)
