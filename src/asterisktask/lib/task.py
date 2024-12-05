@@ -481,11 +481,31 @@ class AsteriskTrainingTask(AsteriskLinearModelTask):
     @abstractmethod
     def _training(self):
         pass
-
-    
-        
+   
     @abstractmethod
     def _save_model(self):
         pass
     
+class AsteriskPredictTask(AsteriskLinearModelTask):
+    '''
+    一个神经网络线性模型任务
+    '''
+    abstract_task = True
+
+    training_status = False
+
+    def __init__(self) -> None:
+        super().__init__()
+
+    def run(self):
+        super().run()
+        
+        self._predict()
+
+    @abstractmethod
+    def _predict(self):
+        pass
     
+    @abstractmethod
+    def _load_model(self):
+        pass
