@@ -189,7 +189,7 @@ class AsteriskHttpTask(AsteriskTask):
         try:
             result = self.exec_json_http_api()
             AsteriskContext.add_key(self.api_method,result)
-            dprint(result)    # 目前比较稳定，不再debug_print
+            # dprint(result)    # 目前比较稳定，不再debug_print
             if result:
                 success_print(f"连接{self.host}成功。")
         except KeyError:
@@ -480,10 +480,16 @@ class AsteriskTrainingTask(AsteriskLinearModelTask):
 
     @abstractmethod
     def _training(self):
+        '''
+        将准备好的数据进行训练
+        '''
         pass
    
     @abstractmethod
     def _save_model(self):
+        '''
+        保存训练好的模型
+        '''
         pass
     
 class AsteriskPredictTask(AsteriskLinearModelTask):
@@ -504,8 +510,14 @@ class AsteriskPredictTask(AsteriskLinearModelTask):
 
     @abstractmethod
     def _predict(self):
+        '''
+        对给定的条件的数据进行预测
+        '''
         pass
     
     @abstractmethod
     def _load_model(self):
+        '''
+        加载训练好的模型
+        '''
         pass

@@ -90,6 +90,14 @@ _Tips_:
 2. 类属性`description`将出现工程启动时的命令表上，请参阅[命令行](#cl)章节
 3. `AppConfig`参见[AppConfig说明](#app_config)
 
+### 默认任务
+
+默认任务指的是工程启动后，系统自动启动的任务。默认任务的设定，在`AppConfig.json`文件中`default_task`进行设定。
+
+### 初始化任务
+
+初始化任务是指，工程启动后，系统自动执行的任务。初始化任务的设定，在`AppConfig.json`文件中`init_task`进行设定。该任务只会执行一次。工程重新启动后，不会再执行初始化任务。主要用于类似数据库表结构的初始化工作等。
+
 ### 定时任务
 
 定时任务通过类属性`is_loop`作为开关。默认值为`False`，当定义为`True`时，开启循环任务，循环配置在`timer`属性中。参考以下例程：
@@ -172,7 +180,84 @@ _Tips_:
 
 ## 任务 <a name='tasks'></a>
 
-所有的任务都必须继承`AsteriskTask`类，由于很多定时任务都是通过http api获取数据，因此我们扩展了`AsteriskHttpTask`[^1]类。下面我逐一说明一下。
+所有的任务都必须继承`AsteriskTask`类，由于很多定时任务都是通过http api获取数据，因此我们扩展了`AsteriskHttpTask`[^1]类。获取数据后，很多情况下需要进行AI训练，自V2.2.2版起，增加了线性回归模型的训练与预测的任务支持，下面将逐一说明一下。
+
+### 类图
+
+```mermaid
+classDiagram
+
+AsteriskTask <|-- AsteriskHttpTask
+
+class AsteriskTask{
+    +String description
+    +bool is_sub_task
+    +bool threading
+    +bool is_loop
+    +dict timer
+    +list next_tasks
+    +bool next_tasks_paralelle
+    +bool is_heavy_task
+    +run()
+    +get_context()
+    +set_context(Any context,int alive=0)
+    +update_context(Any context)
+}
+
+class AsteriskHttpTask{
+    +String protocal
+    +String host
+    +int port
+    +dict http_api
+    +String api_method
+    
+    +rum()<>
+    +adjustdata()
+    +exec_http_api()
+    +exec_json_http_api()
+    +exec_txt_http_api()
+    
+}
+AsteriskTask <|-- AsteriskLinearModelTask
+class AsteriskLinearModelTask{
+    +int input_features
+    +int output_features
+    +bool training_status
+
+    +run() <>
+    #collect_data()
+    #framework_setup(bool training_status)
+    
+}
+
+AsteriskLinearModelTask <|-- AsteriskTrainingTask
+
+class AsteriskTrainingTask{
+    +int epoch_num
+    +int batch_size
+    +float learning_rate
+    +float ratio
+    +float max_loss_to_stop
+    +int training_idx_start
+    +int training_idx_end
+    +int lable_idx_start
+    +int lable_idx_end
+
+    +bool training_status
+    +run() <>
+    #training()
+    #sava_model()
+}
+
+AsteriskLinearModelTask <|-- AsteriskPredictTask
+class AsteriskPredictTask{
+    +bool training_status
+    +run() <>
+    #predict()
+    #load_model(s)
+}
+
+```
 
 [^1]:这是第二代的通过http api获取数据的任务类。
 
@@ -206,6 +291,9 @@ subcheck2-->|no|e
 |next_tasks|tuple|null|后续任务[^2]|子任务只能通过这里调用|
 |next_tasks_paralelle|bool|False|当设定为抽象任务时，不作为具体任务执行。必须有子类的任务才能执行任务。并行的好处是，以多线程的方式执行，可以提高任务的执行效率。同时可以快速释放主任务的内存。| |
 |is_heavy_task|bool|False|是否是重量级任务，如果是，则需要考虑任务的执行时间，以及任务的执行效率.目前的设计是，如果是重量级任务，则需在任务执行结束后，释放内存。调用系统的clear方法，清除内存。||
+|hidden_task|bool|False|是否隐藏任务，隐藏的任务将不会显示在help表格中|在命令行中依然可以调用（V2.2.2开始支持）|
+
+
 
 [^2]:后续任务可以是主任务，也可以是子任务，但子任务必须从后续任务这里启动
 
@@ -243,47 +331,16 @@ subcheck2-->|no|e
     <tr>
         <td>alive: 上下文保存的时间，单位为秒（整数）</td>
     </tr>
+    <tr>
+        <td>update_context</td><td>context:需要保存到上下文的数据，可以是任何数据格式</td><td>更新上下文内容，以便于后续任务调用</td><td>V2.2.2开始支持</td>
+    </tr>
 </table>
 
 ### AsteriskHttpTask
 
 AsteriskHttpTask基于AsteriskTask扩展了对http api获取数据的能力，对于大数据业务处理，深度学习与模型训练有极大的帮助。我们需要先了解以下UML类图。
 
-```mermaid
-classDiagram
 
-AsteriskTask <|-- AsteriskHttpTask
-
-class AsteriskTask{
-    +String description
-    +bool is_sub_task
-    +bool threading
-    +bool is_loop
-    +dict timer
-    +list next_tasks
-    +bool next_tasks_paralelle
-    +bool is_heavy_task
-    +run()
-    +get_context()
-    +set_context(Any context,int alive=0)
-}
-
-class AsteriskHttpTask{
-    +String protocal
-    +String host
-    +int port
-    +dict http_api
-    +String api_method
-    
-    +rum()
-    +adjustdata()
-    +exec_http_api()
-    +exec_json_http_api()
-    +exec_txt_http_api()
-    
-}
-
-```
 
 其任务执行的流程如下：
 
@@ -352,6 +409,199 @@ api method:
 |exec_json_http_api()|无参数|该方法与exec_http_api()类似，差别在于返回json格式数据||
 |exec_txt_http_api()|无参数|该方法与exec_http_api()类似，差别在于返回txt格式数据||
 
+### AsteriskLinearModelTask
+
+AsteriskLinearModelTask是线性回归模型的基类，其继承自AsteriskTask。V2.2.2开始支持。
+
+#### AsteriskLinearModelTask类属性
+
+以下整理了类属性
+
+|名称|数据类型|默认值|说明|备注|
+|:---|:---|:---:|:---|:---|
+|input_features|int|0|输入特征的数量||
+|output_features|int|0|输出特征的数量||
+|training_status|bool|False|是否是训练模型||
+
+#### AsteriskLinearModelTask类方法
+
+以下整理了类方法
+
+|方法名|参数说明|方法说明|备注|
+|:---|:---|:---|:---:|
+|framework_setup|bool|False|模型的训练准备工作||
+|collect_data|无参数|该方法需要在run()中调用，根据任务的具体需要来执行。|注意：training_data,test_data这两个对象属性在init方法中通过该方法获得赋值|
+
+### AsteriskTrainingTask
+
+AsteriskTrainingTask是线性回归模型的训练任务，其继承自AsteriskLinearModelTask。V2.2.2开始支持。
+
+#### AsteriskTrainingTask类属性
+
+以下整理了类属性
+
+|名称|数据类型|默认值|说明|备注|
+|:---|:---|:---:|:---|:---|
+|epoch_num|int|100|训练的轮数||
+|batch_size|int|100|训练的批次||
+|learning_rate|float|0.01|学习率||
+|ratio|float|0.8|训练集的比例||
+|max_loss_to_stop|float|0.0001|最大损失值||
+|training_idx_start|int|0|训练集的起始位置||
+|training_idx_end|int|0|训练集的结束位置||
+|lable_idx_start|int|0|标签的起始位置||
+|lable_idx_end|int|0|标签的结束位置||
+
+#### AsteriskTrainingTask类方法
+
+以下整理了类方法
+
+|方法名|参数说明|方法说明|备注|
+|:---|:---|:---|:---:|
+|training|无参数|对准备好的数据进行训练|该方法需要在run()中调用，根据任务的具体需要来执行。|
+|save_model|无参数|保存训练好的模型|该方法需要在run()中调用，根据任务的具体需要来执行。|
+
+
+### AsteriskPredictTask
+
+AsteriskPredictTask是线性回归模型的预测任务，其继承自AsteriskLinearModelTask。V2.2.2开始支持。
+
+#### AsteriskPredictTask类属性
+
+以下整理了类属性
+
+|名称|数据类型|默认值|说明|备注|
+|:---|:---|:---:|:---|:---|
+|training_status|bool|False|是否是训练模型|这里默认为否|
+
+#### AsteriskPredictTask类方法
+
+以下整理了类方法
+
+|方法名|参数说明|方法说明|备注|
+|:---|:---|:---|:---:|
+|predict|无参数|对给定的条件的数据进行预测|该方法需要在run()中调用，根据任务的具体需要来执行。|
+|load_model|无参数|加载模型|该方法需要在run()中调用，根据任务的具体需要来执行。|
+
+## ORM支持
+
+自V2.2.0版起，基于SqlAlchemy，支持ORM的方式来管理数据库。Asterisk在SqlAlchemy的基础上，提供了一些简单的操作，方便开发人员使用。
+
+
+### 扩展特性
+
+Asterisk在SqlAlchemy的基础上，做了一些扩展特性，目的是体现Asterisk的一些关于数据库的思想：
+
+1. <b>数据得来不易，不要轻易删除。</b>所有的表都有一个is_deleted字段，用于标识该条数据是否被删除，这样就便于做软删除。
+2. <b>数据要留下基本的记录。</b>所有的表都有一个create_time字段和update_time，用于标识该条数据的创建时间和最后更新时间，这样就便于做数据的追溯。
+3. <b>不要轻易做外键关联。</b>应尽量做逻辑的外键关联。很多的ORM的软件都忠于数据库厂商的设计，这样会导致数据查询的性能问题。在V2.2.0版本中暂时还没有实现这个特性。会在以后的版本中实现。
+
+#### 默认表字段
+
+为简化开发人员的工作量，在定义表时，会自动生成以下字段：
+
+|字段名|类型|说明|备注|
+|:---|:---|:---|:---:|
+|id|int|主键|自增|
+|create_time|datetime|创建时间|自动生成|
+|update_time|datetime|更新时间|自动生成|
+|is_deleted|int|是否删除|0表示未删除，1表示已删除|
+
+举例如下
+
+```python
+from asterisktask.lib.orm import AsteriskModel
+from sqlalchemy import String,ForeignKey
+from sqlalchemy.orm import Mapped,relationship,mapped_column,DeclarativeBase
+from typing import List
+
+class Users(AsteriskModel):
+    __tablename__ = 'users'
+    username: Mapped[str] = mapped_column(String(255),unique=True)
+    password: Mapped[str] = mapped_column(String(32))
+    email: Mapped[str] = mapped_column(String(255))
+    user_codes: Mapped[List["UserCodes"]] = relationship(back_populates="user",cascade="all, delete-orphan")
+    def __repr__(self) -> str:
+        return f'<{self.username!r} User>: id={self.id!r}, email={self.email!r}'
+```
+
+通过集成AsteriskModel类，我们可以很方便的定义表，而不需要自己定义主键，创建时间，更新时间，是否删除等字段。
+
+#### select默认返回未删除的数据
+
+Asterisk改写了SqlAlchemy的select方法，使得select方法默认返回未删除的数据。
+
+举例如下
+
+```python
+from spc.models import Exchange
+from sqlalchemy import create_engine
+from asterisktask.lib.orm import AsteriskSession as Session,select
+engine = create_engine('sqlite:///data/exchange.db')
+
+with Session(engine) as session:
+    stmt = select(Exchange)
+    for exchange in session.scalars(stmt):
+        print(exchange)
+success_print('查询完成')
+
+```
+
+语法结构与直接使用SqlAlchemy的select方法一致。区别在于需要使用AsteriskSession来代替SqlAlchemy的Session和scalars方法。
+
+#### 表数据的软删除
+
+Asterisk改写了SqlAlchemy的delete方法，使得delete方法实际只是将is_deleted字段设置为1，而不是真正的删除数据。
+
+举例如下
+
+```python
+
+from asterisktask.lib.orm import AsteriskSession as Session
+from spc.models import Exchange,Session as SqlSession
+from sqlalchemy import create_engine
+engine = create_engine('sqlite:///spc.db',echo=False)
+with Session(engine) as session:
+    exchange = session.query(Exchange).filter(Exchange.abbreviation=='SH').all()
+    session.delete(exchange)
+    session.commit()
+success_print('删除完成')
+```
+
+语法结构与直接使用SqlAlchemy的delete方法一致。区别在于需要使用AsteriskSession来代替SqlAlchemy的Session和delete方法。
+
+当然也可以直接使用asterisktask.lib.orm包里的delete函数，效果与直接使用AsteriskSession的delete方法一致。
+
+
+### 数据库相关配置
+
+目前在AppConfig中没有增加固定的配置，但可以自定义配置。
+以下是一个范例：
+
+```json
+"data_sources":{
+    "mysql":{
+        "driver":"pymysql",
+        "host":"localhost",
+        "port":3306,
+        "user":"spc",
+        "password":"USUHoeZB6OTaJZtEx4KEu22IC7snM816OUkGsFvoGERdpE+N8Slh/rLDjQYRWPQ26cN5HZcpAlkE8cbYskqPtg==",
+        "database":"spc"
+        },
+    "sqlite":{
+        "description":"sqlite数据源",
+        "path":"data",
+        "filename":"spc.db"
+        }
+    
+},
+"data_source":"mysql"
+```
+
+Asterisk-Task会在后续版本中增加固定的配置，以方便用户使用。
+
+### 类与函数说明
+
 ## 工程配置
 
 在运行`atnewapp`命令后生成的同名目录中，软件为工程自动生成了一个配置文件AppConfig.json文件
@@ -366,6 +616,7 @@ api method:
 |app_email|Y|unknown@abc.com|N|联系电邮地址|建议工程生成后自行修改|
 |task_module|Y|根据命令自动生成|Y|任务类所在的模块位置|在不熟悉本框架前不建议修改|
 |default_task|Y|根据命令自动生成|Y|任务启动后的默认调用任务|建议工程生成后自行修改|
+|init_task|Y|根据命令自动生成|Y|工程启动后的初始化任务|建议工程生成后自行修改,该任务只执行一次，主要用于工程启动后建立表结果等一次性setup的任务，自V2.2.0版后支持|
 |app_version|Y|0.0.1|Y|工程版本号|建议工程生成后自行修改|
 |prompt|Y|根据命令自动生成|Y|可根据需要修改|
 |connection_timeout|Y|30|Y|http请求的超时限制，默认为30秒|建议不要修改|

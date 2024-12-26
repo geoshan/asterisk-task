@@ -12,16 +12,18 @@
 
 ## 发行日志
 
-详细可以参考[gitee版发布日志](https://gitee.com/zhangxin_1/asterisk-task/blob/master/docs/release_log.md)
-技术文档参考[Documentation](https://gitee.com/zhangxin_1/asterisk-task/blob/master/docs/documentation.md)
+详细可以参考[github版发布日志](https://github.com/geoshan/asterisk-task/blob/master/docs/release_log.md)
+技术文档参考[Documentation](https://github.com/geoshan/asterisk-task/blob/master/docs/documentation.md)
 
-### V2.1.0
+### 最新V2.2.0
 
-* 移除AsteriskSinDout类，该类主要用于加密、解密。可以另外安装asterisk-security
-* 实现定时任务中中国工作日，中国交易日的设定。
-* 已经宣示deprecated都是的error_print以及warn_print方法，正式下线
-* 开始deprecte start_task方法，逐步该用exec_task方法
-* task支持next_tasks_paralelle属性，默认为False，当为True时，后续任务将启动新线程中执行，可以快速将主任务结束。
+* 增加AI模型训练的内置任务
+* 完全移除util模块中的mail包
+* 增加基于SQLAlchemy的ORM支持
+* 通过配置快速配置数据库连接
+* 增加工程初始化任务，只执行一次
+* 增加任务的隐藏任务属性。对于初始化任务因只执行一次，故可以在任务列表中隐藏
+* AsteriskTask增加update_context方法，以便于多个子任务中更新上下文
 
 ### 软件架构
 
@@ -50,11 +52,7 @@ Aterisk-Task以TaskManager作为任务管理器的类，在系统启动时，读
 3. 提交代码
     新建 Pull Request
 
-### 特技
+### 需求反馈
 
-1. 使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2. Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3. 你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4. [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5. Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6. Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+1. 请在github上提issue
+2. 或者直接联系作者 geoshan@163.com

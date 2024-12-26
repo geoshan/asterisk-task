@@ -301,13 +301,16 @@ class TaskManager():
         
         if not task.__dict__.get('is_main_thread'): #and not context_id:
             print() # 非主线中的主任务需要打印回车
-        heavy_task = True if t.__dict__.get('is_heavy_task') else False
+        heavy_task = True if t.__dict__.get('is_heavy_task') else False        
+        # #释放下下文
+        # AsteriskContext.remove_content(task.next_context_id)
         # 当任务完成时,删除task，释放内存
         del(task)
         if heavy_task:
             self.__clear_memory()
         
         if not is_main_thread  and not context_id:
+            
             print_prompt() # 只有在主线程以及定时任务的多线程任务在任务结束时答应提示符
 
     def __clear_memory(self):
