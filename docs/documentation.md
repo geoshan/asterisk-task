@@ -5,7 +5,7 @@
 这是一个任务管理的框架，可以把需要执行的任务在命令行进行执行，配置定时任务、多线程运行的任务等。
 可以应用到日常监控、自动化执行、数据自动采集、定时自动机器学习等方面。
 
-本框架诞生自2021年，当时在疫情期间，隔离、居家办公的多种工作条件下，需要一个自动换成一些服务端任务的程序。于是就着手写了这个框架。目前这个框架开源在gitee[asterisk-task](https://gitee.com/zhangxin_1/asterisk-task)上。
+本框架诞生自2021年，当时在疫情期间，隔离、居家办公的多种工作条件下，需要一个自动换成一些服务端任务的程序。于是就着手写了这个框架。目前这个框架开源在github [asterisk-task](https://github.com/geoshan/asterisk-task)上。
 
 欢迎提交缺陷，以便不断优化改进。
 
@@ -17,7 +17,7 @@
 
 ### 从gitee下载whl文件安装
 
-1. 在gitee的[发行版](https://gitee.com/zhangxin_1/asterisk-task/releases/) 下载最新发行版
+1. 在github的[发行版](https://github.com/geoshan/asterisk-task/releases) 下载最新发行版
 2. 可以命令行中执行`pip3 install asterisk_task-*.whl`进行安装
 
 ### 源码安装
@@ -92,11 +92,11 @@ _Tips_:
 
 ### 默认任务
 
-默认任务指的是工程启动后，系统自动启动的任务。默认任务的设定，在`AppConfig.json`文件中`default_task`进行设定。
+默认任务指的是工程启动后，系统自动启动的任务。默认任务的设定，在`AppConfig.json`文件(参见[AppConfig说明](#app_config))中`default_task`进行设定。
 
 ### 初始化任务
 
-初始化任务是指，工程启动后，系统自动执行的任务。初始化任务的设定，在`AppConfig.json`文件中`init_task`进行设定。该任务只会执行一次。工程重新启动后，不会再执行初始化任务。主要用于类似数据库表结构的初始化工作等。
+初始化任务是指，工程启动后，系统自动执行的任务。初始化任务的设定，在`AppConfig.json`文件(参见[AppConfig说明](#app_config))中`init_task`进行设定。该任务只会执行一次。工程重新启动后，不会再执行初始化任务。主要用于类似数据库表结构的初始化工作等。
 
 ### 定时任务
 
@@ -760,7 +760,7 @@ __注意__
 
 ## 招募
 
-招募合作者，有意者请电邮`shan@zhangxin.ltd`
+招募合作者，有意者请电邮`geoshan@163.com`
 
 ### 合作开发
 

@@ -36,7 +36,7 @@ Aterisk-Task以TaskManager作为任务管理器的类，在系统启动时，读
 
 ### 安装教程
 
-1. 在gitee中[发行版](https://e.gitee.com/zhangxin_1/repos/zhangxin_1/asterisk-task/releases/ "Asteristk-Task 框架发行版")下载最新发行版
+1. 在github中[发行版](https://github.com/geoshan/asterisk-task/releases/ "Asteristk-Task 框架发行版")下载最新发行版
 2. 可以命令行中执行`pip3 install asterisk_task-*.whl`进行安装
 
 ### 使用说明
