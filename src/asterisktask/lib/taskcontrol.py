@@ -1,8 +1,8 @@
 import sys,inspect
 from asterisktask.setup.setting import AppConfig
-from asterisktask.util.tool import AsteriskContext, print_prompt,classproperty
+from asterisktask.util.tool import print_prompt,classproperty
 from asteriskutils.tools import dprint,iprint,wprint,error_print
-from asterisktask.lib.task import TaskEngine,AsteriskTask
+from asterisktask.lib.task import AsteriskTask
 from asterisksecurity.encryption import AsteriskEncrypt
 # import importlib
 import uuid
@@ -34,7 +34,7 @@ class TaskManager():
             for name, task_class in tasks:
                 # if task_class.__module__ != AppConfig['task_module'] or not (TaskEngine in task_class.__mro__):
                 if not task_class.__module__.__contains__(AppConfig['task_module'])  or \
-                    not (TaskEngine in task_class.__mro__ or AsteriskTask in task_class.__mro__ ) or task_class.__dict__.get('abstract_task'):
+                    not ( AsteriskTask in task_class.__mro__ ) or task_class.__dict__.get('abstract_task'):
                     ex.append(tasks.index((name,task_class)))
             if len(ex)>1:
                 ex.sort(reverse=True)
