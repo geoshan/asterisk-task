@@ -255,146 +255,146 @@ class AsteriskHttpTask(AsteriskTask):
                         
 
 
-class TaskEngine(metaclass=ABCMeta):
-    '''
-    Task的抽象类，提供了抽象run方法。
-    在TaskManager中实例出来对象，统一调用run()方法来执行任务
-    '''
+# class TaskEngine(metaclass=ABCMeta):
+#     '''
+#     Task的抽象类，提供了抽象run方法。
+#     在TaskManager中实例出来对象，统一调用run()方法来执行任务
+#     '''
     
-    def __init__(self,**task_conf) -> None:
-        '''
-        初始化时赋值参数，并调用调正数据的方法。调整数据的目的是把任务执行的外部参数进行处理
-        Args:
-            task_conf(kwargs): 任务执行的配置信息，一般为json格式
-        '''
-        self.task_conf = task_conf
-        self.custom_data={}
-        self.adjustdata()
-        try:
-            iprint('取得上下文id为{}'.format(self.task_conf['prev_context_id']))
-            # dprint(AsteriskContext.get_content(self.task_conf['prev_context_id'])) # 已稳定运行，取消debug_print
+#     def __init__(self,**task_conf) -> None:
+#         '''
+#         初始化时赋值参数，并调用调正数据的方法。调整数据的目的是把任务执行的外部参数进行处理
+#         Args:
+#             task_conf(kwargs): 任务执行的配置信息，一般为json格式
+#         '''
+#         self.task_conf = task_conf
+#         self.custom_data={}
+#         self.adjustdata()
+#         try:
+#             iprint('取得上下文id为{}'.format(self.task_conf['prev_context_id']))
+#             # dprint(AsteriskContext.get_content(self.task_conf['prev_context_id'])) # 已稳定运行，取消debug_print
             
-        except KeyError:
-            # 没有设置prev_context_id
-            iprint('当前执行的为主任务。')
+#         except KeyError:
+#             # 没有设置prev_context_id
+#             iprint('当前执行的为主任务。')
             
-    @abstractmethod
-    def run(self):
-        '''
-        运行任务
-        这里是抽象方法，具体实现在子类中实现
-        '''
-        pass
+#     @abstractmethod
+#     def run(self):
+#         '''
+#         运行任务
+#         这里是抽象方法，具体实现在子类中实现
+#         '''
+#         pass
 
     
-    def adjustdata(self):
-        '''
-        可以通过overwrite这个方法来具体处理任务执行可能需要的外部数据。
-        '''
-        pass
+#     def adjustdata(self):
+#         '''
+#         可以通过overwrite这个方法来具体处理任务执行可能需要的外部数据。
+#         '''
+#         pass
 
-    def get_context(self):
-        '''
-        取出上下文，一般在子任务中调用
-        '''
-        try:
-            return AsteriskContext.get_content(self.task_conf['prev_context_id'])
-        except KeyError:
-            return None
-    def set_context(self,context,alive=0):
-        '''
-        将task运行后得到结果存储在上下文中，一般在有关联子任务时，用于传递上下文信息用
-        Args:
-            context(Any):上下文信息
-            alive(int=0): 上下文需要保持的秒数
-        '''
-        try:
-            AsteriskContext.add_key(self.task_conf['next_context_id'],context,alive)
-        except KeyError:
-            wprint('本任务可能没有设置关联下一个任务，故无法设置上下文。')
+#     def get_context(self):
+#         '''
+#         取出上下文，一般在子任务中调用
+#         '''
+#         try:
+#             return AsteriskContext.get_content(self.task_conf['prev_context_id'])
+#         except KeyError:
+#             return None
+#     def set_context(self,context,alive=0):
+#         '''
+#         将task运行后得到结果存储在上下文中，一般在有关联子任务时，用于传递上下文信息用
+#         Args:
+#             context(Any):上下文信息
+#             alive(int=0): 上下文需要保持的秒数
+#         '''
+#         try:
+#             AsteriskContext.add_key(self.task_conf['next_context_id'],context,alive)
+#         except KeyError:
+#             wprint('本任务可能没有设置关联下一个任务，故无法设置上下文。')
 
-class HttpApiTask(TaskEngine):
-    '''
-    这是一个非常好的范例
-    继承了TaskEngine，实现了run方法
-    这是一个比较标准的运用HttpApi的，实现了通用的http Api的连接
-    相关的参数以及配置可以通过HpptApiConnfig.json文件来设置
-    '''
+# class HttpApiTask(TaskEngine):
+#     '''
+#     这是一个非常好的范例
+#     继承了TaskEngine，实现了run方法
+#     这是一个比较标准的运用HttpApi的，实现了通用的http Api的连接
+#     相关的参数以及配置可以通过HpptApiConnfig.json文件来设置
+#     '''
 
-    def run(self):
-        '''
-        根据task_conf执行http api的请求，并将请求返回的结果存储在以api_name命名的上下文中
-        '''
-        try:
-            result = self.exec_json_http_api()
-            AsteriskContext.add_key(self.task_conf['api_method'],result)
-            # dprint(result)    # 目前比较稳定，不再debug_print
-            if result:
-                success_print(f"连接{self.task_conf['host']}成功。")
-        except KeyError:
-            error_print(result)
+#     def run(self):
+#         '''
+#         根据task_conf执行http api的请求，并将请求返回的结果存储在以api_name命名的上下文中
+#         '''
+#         try:
+#             result = self.exec_json_http_api()
+#             AsteriskContext.add_key(self.task_conf['api_method'],result)
+#             # dprint(result)    # 目前比较稳定，不再debug_print
+#             if result:
+#                 success_print(f"连接{self.task_conf['host']}成功。")
+#         except KeyError:
+#             error_print(result)
         
 
-    def exec_json_http_api(self)->json:
-        '''
-        将http api的请求单独抽象到此方法执行
-        Returns
-            json:将http请求的json结果返回
-        '''
-        result = self.exec_http_api()
-        return json.loads(result.text) if result else None
+#     def exec_json_http_api(self)->json:
+#         '''
+#         将http api的请求单独抽象到此方法执行
+#         Returns
+#             json:将http请求的json结果返回
+#         '''
+#         result = self.exec_http_api()
+#         return json.loads(result.text) if result else None
     
-    def exec_txt_http_api(self)->str:
-        '''
-        将http api的请求单独抽象到此方法执行
-        Returns
-            str:将http请求的返回的文本
-        '''
-        result = self.exec_http_api()
-        return result.text if result else ''
+#     def exec_txt_http_api(self)->str:
+#         '''
+#         将http api的请求单独抽象到此方法执行
+#         Returns
+#             str:将http请求的返回的文本
+#         '''
+#         result = self.exec_http_api()
+#         return result.text if result else ''
 
-    def exec_http_api(self)->response:
-        '''
-        将http api的请求单独抽象到此方法执行
-        Returns
-            response:将http请求的response原始结果返回
-        '''
-        from asterisktask.api.http import HttpApi
-        default_api = type('DefaultAPI',(HttpApi,),{})
-        task_api = default_api(self.task_conf)
-        try:
-            if hasattr(task_api,self.task_conf['api_method']):
-                exec = getattr(task_api,self.task_conf['api_method'])
-            resp = exec(self.task_conf['http_api'][self.task_conf['api_method']],**self.custom_data)
-            # iprint(f"连接{self.task_conf['host']}结束。") #已稳定运行，不再需要打印
-            return resp
-        except KeyError:
-            error_print(resp)
-            error_print(f'连接{self.task_conf["host"]}失败，退出！')
+#     def exec_http_api(self)->response:
+#         '''
+#         将http api的请求单独抽象到此方法执行
+#         Returns
+#             response:将http请求的response原始结果返回
+#         '''
+#         from asterisktask.api.http import HttpApi
+#         default_api = type('DefaultAPI',(HttpApi,),{})
+#         task_api = default_api(self.task_conf)
+#         try:
+#             if hasattr(task_api,self.task_conf['api_method']):
+#                 exec = getattr(task_api,self.task_conf['api_method'])
+#             resp = exec(self.task_conf['http_api'][self.task_conf['api_method']],**self.custom_data)
+#             # iprint(f"连接{self.task_conf['host']}结束。") #已稳定运行，不再需要打印
+#             return resp
+#         except KeyError:
+#             error_print(resp)
+#             error_print(f'连接{self.task_conf["host"]}失败，退出！')
 
-class HttpApiTaskV2(HttpApiTask):
+# class HttpApiTaskV2(HttpApiTask):
 
-    def exec_http_api(self)->response:
-        '''
-        将http api的请求单独抽象到此方法执行
-        Returns
-            response:将http请求的response原始结果返回
-        '''
-        from asterisktask.api.http import HttpApiV2
-        defaut_api = type('DefaultAPI',(HttpApiV2,),{})
-        task_api = defaut_api(self.task_conf)
-        try:
-            if hasattr(task_api,self.task_conf['api_method']):
-                exec = getattr(task_api,self.task_conf['api_method'])
-            result,resp = exec(self.task_conf['http_api'][self.task_conf['api_method']],**self.custom_data)
-            # iprint(f"连接{self.task_conf['host']}结束。") #已稳定运行，不再需要打印
-            if result['success']:
-                return resp
-            else:
-                return None
-        except KeyError:
-            error_print(resp)
-            error_print(f'连接{self.task_conf["host"]}失败，退出！')
+#     def exec_http_api(self)->response:
+#         '''
+#         将http api的请求单独抽象到此方法执行
+#         Returns
+#             response:将http请求的response原始结果返回
+#         '''
+#         from asterisktask.api.http import HttpApiV2
+#         defaut_api = type('DefaultAPI',(HttpApiV2,),{})
+#         task_api = defaut_api(self.task_conf)
+#         try:
+#             if hasattr(task_api,self.task_conf['api_method']):
+#                 exec = getattr(task_api,self.task_conf['api_method'])
+#             result,resp = exec(self.task_conf['http_api'][self.task_conf['api_method']],**self.custom_data)
+#             # iprint(f"连接{self.task_conf['host']}结束。") #已稳定运行，不再需要打印
+#             if result['success']:
+#                 return resp
+#             else:
+#                 return None
+#         except KeyError:
+#             error_print(resp)
+#             error_print(f'连接{self.task_conf["host"]}失败，退出！')
 
 
 class AsteriskLinearModelTask(AsteriskTask):

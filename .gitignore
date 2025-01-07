@@ -12,3 +12,4 @@ run_aster*.*
 *.db
 *.pdparams
 .initat
+.codegpt

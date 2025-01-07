@@ -329,75 +329,79 @@ class TaskManager():
         iprint('任务执行完毕，释放内存。')
 
 
-    @deprecated(reason='将逐步由exec_task来替代',version='2.1.0')
-    def start_task(self,name:str,context_id:str='') -> None:
-        '''
-        按照name名称启动任务。
-        Args:
-            name(str):任务名称，如:
-                "tasks":{
-                    "get_gitee_token":{
-                        ...
-                    },
-                    ...
-                }
-            context_id(str): 上文的context_id。
-        '''
-        is_main_thread = True if current_thread().name == 'MainThread' else False
+    # @deprecated(reason='将逐步由exec_task来替代',version='2.1.0')
+    # def start_task(self,name:str,context_id:str='') -> None:
+    #     '''
+    #     按照name名称启动任务。
+    #     Args:
+    #         name(str):任务名称，如:
+    #             "tasks":{
+    #                 "get_gitee_token":{
+    #                     ...
+    #                 },
+    #                 ...
+    #             }
+    #         context_id(str): 上文的context_id。
+    #     '''
+    #     is_main_thread = True if current_thread().name == 'MainThread' else False
         
         
-        if not is_main_thread and context_id=='':
-            if current_thread().name.startswith("threading_task"):
-                sleep(1) # 当手动启动多线程的任务时，需要延迟少许，以便提示符能正确显示
-            print() # 非主线中的主任务需要打印空行开始
-            iprint(f'当前线程为[{current_thread().name}]')
+    #     if not is_main_thread and context_id=='':
+    #         if current_thread().name.startswith("threading_task"):
+    #             sleep(1) # 当手动启动多线程的任务时，需要延迟少许，以便提示符能正确显示
+    #         print() # 非主线中的主任务需要打印空行开始
+    #         iprint(f'当前线程为[{current_thread().name}]')
         
-        try:
-            # dprint(AppConfig['tasks'][name].get('threading')) # 检车是否多线程任务
-            # 如果在主线程中，需要检查该任务是否需要多线程运行
-            if is_main_thread and AppConfig['tasks'][name].get('threading'):
-                self.start_threading_task(name,context_id)
-                return
-            task_conf = self.__init_task_conf(name,context_id)
-            # 以下修改尝试每次执行任务时从任务池取类，实例化并执行任务后即析构释放内存
-            t = TaskPool.get_task(AppConfig['tasks'][name]['task_class'])(**task_conf)
-            t.run()
-            del t
-            #TaskPool.get_task(AppConfig['tasks'][name]['task_class'])(**task_conf).run()
-            # 执行完主任务后，如有关联任务，则执行关联任务
-            if task_conf.get('next_context_id'):
-                self.start_sub_task(name,task_conf['next_context_id'])
-            # 当任务完成时，会将使用api的任务中产生的临时上下文删除
-            # 临时上下文的名称以api_methond命名
-            if AppConfig['tasks'][name].get('use_api',False) :
-                AsteriskContext.remove_content(task_conf['api_method'])
-            # if AppConfig['tasks'][name].get('use_api',False) and \
-            #     AsteriskContext.get_content(task_conf['api_method']) is not None:
-            #     AsteriskContext.remove_content(task_conf['api_method'])
-        except KeyError as e:
-            try:
+    #     try:
+    #         # dprint(AppConfig['tasks'][name].get('threading')) # 检车是否多线程任务
+    #         # 如果在主线程中，需要检查该任务是否需要多线程运行
+    #         if is_main_thread and AppConfig['tasks'][name].get('threading'):
+    #             self.start_threading_task(name,context_id)
+    #             return
+    #         task_conf = self.__init_task_conf(name,context_id)
+    #         # 以下修改尝试每次执行任务时从任务池取类，实例化并执行任务后即析构释放内存
+    #         t = TaskPool.get_task(AppConfig['tasks'][name]['task_class'])(**task_conf)
+    #         t.run()
+    #         del t
+    #         #TaskPool.get_task(AppConfig['tasks'][name]['task_class'])(**task_conf).run()
+    #         # 执行完主任务后，如有关联任务，则执行关联任务
+    #         if task_conf.get('next_context_id'):
+    #             self.start_sub_task(name,task_conf['next_context_id'])
+    #         # 当任务完成时，会将使用api的任务中产生的临时上下文删除
+    #         # 临时上下文的名称以api_methond命名
+    #         if AppConfig['tasks'][name].get('use_api',False) :
+    #             AsteriskContext.remove_content(task_conf['api_method'])
+    #         # if AppConfig['tasks'][name].get('use_api',False) and \
+    #         #     AsteriskContext.get_content(task_conf['api_method']) is not None:
+    #         #     AsteriskContext.remove_content(task_conf['api_method'])
+    #     except KeyError as e:
+    #         try:
 
-                if(TaskPool.get_task(name)):
-                    self.exec_task(TaskPool.get_task(name))
-                else:
-                    dprint(e)
-                    error_print(f'[{name}]任务无相关联api配置，或者没有相匹配的任务类。任务未执行!')
-                    iprint('输入命令“help“获取帮助')
-            except KeyError as e:
-                dprint(e)
-                error_print(f'任务[{name}]未定义。')
-        except KeyboardInterrupt:
-            # 当使用ctrl + C时，取消任务执行
-            print()
-            wprint(f'取消任务[{name}]的执行！')
-            sleep(0.4)
-        except BaseException as e:
-            dprint(e)
-            error_print(f'任务[{name}]出错!')
+    #             if(TaskPool.get_task(name)):
+    #                 self.exec_task(TaskPool.get_task(name))
+    #             else:
+    #                 dprint(e)
+    #                 error_print(f'[{name}]任务无相关联api配置，或者没有相匹配的任务类。任务未执行!')
+    #                 iprint('输入命令“help“获取帮助')
+    #         except KeyError as e:
+    #             dprint(e)
+    #             error_print(f'任务[{name}]未定义。')
+    #     except KeyboardInterrupt:
+    #         # 当使用ctrl + C时，取消任务执行
+    #         print()
+    #         wprint(f'取消任务[{name}]的执行！')
+    #         sleep(0.4)
+    #     except BaseException as e:
+    #         dprint(e)
+    #         error_print(f'任务[{name}]出错!')
     
-        if not is_main_thread  and not context_id:
-            print_prompt() # 非主线中的主任务需要打印提示符结束
+    #     if not is_main_thread  and not context_id:
+    #         print_prompt() # 非主线中的主任务需要打印提示符结束
 
+    '''
+    这段代码是为了逐步替代start_task方法，将start_task方法逐步替换为exec_task方法后，将删除
+    但为了后续功能做参考，暂时保留
+    '''
     def __init_task_conf(self,name:str,context_id:int) -> dict:
         '''
         为每个任务准备任务配置
@@ -426,36 +430,39 @@ class TaskManager():
         return task_conf
 
 
-    def start_sub_task(self,name,next_context_id):
-        '''
-        执行子任务
-        Args:
-            name(str):任务名称，如:
-                "tasks":{
-                    "get_gitee_token":{
-                        ...
-                    },
-                    ...
-                }
-            next_context_id(int): 下文的context_id
-        '''
-        try:
-            next_task = AppConfig['tasks'][name]['next_task']
+    '''
+    在2.1.0版本中，将逐步替代start_task方法，将start_task方法逐步替换为exec_task方法后，将删除
+    '''
+    # def start_sub_task(self,name,next_context_id):
+    #     '''
+    #     执行子任务
+    #     Args:
+    #         name(str):任务名称，如:
+    #             "tasks":{
+    #                 "get_gitee_token":{
+    #                     ...
+    #                 },
+    #                 ...
+    #             }
+    #         next_context_id(int): 下文的context_id
+    #     '''
+    #     try:
+    #         next_task = AppConfig['tasks'][name]['next_task']
             
-            iprint("准备启动关联的[{}]任务".format(next_task))
-            for sub_task in next_task:
-                self.start_task(sub_task,context_id = next_context_id)
-                iprint('关联任务[{}]结束。'.format(sub_task))
-            # 清除关联任务的上下文
-            AsteriskContext.remove_content(next_context_id)
+    #         iprint("准备启动关联的[{}]任务".format(next_task))
+    #         for sub_task in next_task:
+    #             self.start_task(sub_task,context_id = next_context_id)
+    #             iprint('关联任务[{}]结束。'.format(sub_task))
+    #         # 清除关联任务的上下文
+    #         AsteriskContext.remove_content(next_context_id)
 
-        except KeyError:
-            iprint('[{}]任务无关联任务。'.format(name))
-        except BaseException as e:
-            dprint(e)
-            error_print('[{}]任务执行出错!'.format(name))
-        else:
-            iprint('[{}]任务结束。'.format(name))
+    #     except KeyError:
+    #         iprint('[{}]任务无关联任务。'.format(name))
+    #     except BaseException as e:
+    #         dprint(e)
+    #         error_print('[{}]任务执行出错!'.format(name))
+    #     else:
+    #         iprint('[{}]任务结束。'.format(name))
 
 
     def start_threading_task(self,name:str,context_id:int):

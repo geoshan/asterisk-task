@@ -50,26 +50,3 @@ class AsteriskTestThreadTask(AsteriskTask):
             iprint(f'V2测试多线程，等待{i}')
             sleep(1)
             i+=1
-'''
-以下为V1.X版的Task，需要AppConfig.json文件进行相关配置
-将在V2.X的后续版本中逐步淘汰
-'''
-
-
-
-class AsteriskTestTask(TaskEngine):
-    '''
-    一个默认的测试项目
-    '''
-    def run(self):
-        success_print('您已经成功创建项目，并运行在Asterisk-Task框架的{}之上'.format(AppConfig['version']))
-class TestThreadTask(TaskEngine):
-    """
-    用于测试多线程任务
-    """
-    def run(self):
-        i=0
-        while (i< 10):
-            info_print(f'测试多线程，等待{i}')
-            sleep(1)
-            i+=1
