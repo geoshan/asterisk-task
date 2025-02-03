@@ -289,7 +289,16 @@ class TaskManager():
         if t.__dict__.get('next_tasks') is not None:
             # dprint(task.next_tasks)
             task.next_context_id = str(uuid.uuid1())
-        task.run()
+        try:
+            task.run()
+        except KeyboardInterrupt:
+            # 当使用ctrl + C时，取消任务执行
+            print()
+            wprint(f'取消任务[{t.__class__.__name__}]的执行！')
+            sleep(0.4)
+        except BaseException as e:
+            dprint(e)
+            error_print(f'任务[{t.__class__.__name__}]出错!')
 
         if task.__dict__.get('next_context_id'):
             for next_task in t.next_tasks:

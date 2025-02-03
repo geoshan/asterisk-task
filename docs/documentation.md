@@ -156,7 +156,7 @@ class TestMainTask(AsteriskTask):
     """
     用于测试主任务
     """
-    next_tasks = ['']
+    next_tasks = ['TestSubTask']
 
     def run(self):
         success_print('第二代主任务启动，运行在Asterisk-Task V{}之上'.format(AppConfig['version']))

@@ -22,13 +22,13 @@ with open('README.md','r', encoding='utf-8') as fp:
 
 setup(
     name="asterisk-task",  #pypi中的名称，pip或者easy_install安装时使用的名称
-    version="{}.{}".format(setting['version'],build_no),
+    version="{}.{}{}".format(setting['version'],build_no,setting['dist_type']),  #版本号
     author="Shan,Tian",
     author_email="geoshan@163.com",
     description=("Task management system."),
     license="Apache License 2.0",
     keywords="task,scheduled task",
-    packages=find_packages(where="src/",exclude=['build','dist','*egg*','submarine','asterisk_dev']),  # 需要打包的目录列表，排除测试项目以及build之后产生的目录
+    packages=find_packages(where="src/",exclude=['build','dist','*egg*','asterisk_dev']),  # 需要打包的目录列表，排除测试项目以及build之后产生的目录
     package_dir={'': 'src'},  # 包对应的目录，""表示src目录
     # 需要安装的依赖
     install_requires=[
