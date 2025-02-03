@@ -45,7 +45,7 @@
 
 Aterisk-Task以TaskManager作为任务管理器的类，在系统启动时，读入配置文件，读取可以调用任务类，启动默认任务，并启动定时任务。本框架集成了schedule、logging等常用类库。
 
-为了解决关联任务直接的数据传递，以AsteriskContext来实现了类似cookie的功能。
+为了解决关联任务之间的数据传递，以AsteriskContext来实现了类似cookie的功能。
 
 自V2.0以后，任务类做了一次比较大的升级。任务类（除了启动后的默认任务，需要在AppConfig文件中配置意外）将不需要在配置文件中进行配置。
 
