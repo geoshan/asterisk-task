@@ -1,5 +1,7 @@
 # Asterisk-Task 技术文档
 
+[TOC]
+
 ## 摘要
 
 这是一个任务管理的框架，可以把需要执行的任务在命令行进行执行，配置定时任务、多线程运行的任务等。
@@ -8,8 +10,6 @@
 本框架诞生自2021年，当时在疫情期间，隔离、居家办公的多种工作条件下，需要一个自动换成一些服务端任务的程序。于是就着手写了这个框架。目前这个框架开源在github [asterisk-task](https://github.com/geoshan/asterisk-task)上。
 
 欢迎提交缺陷，以便不断优化改进。
-
-[TOC]
 
 ## 安装
 
@@ -293,8 +293,6 @@ subcheck2-->|no|e
 |is_heavy_task|bool|False|是否是重量级任务，如果是，则需要考虑任务的执行时间，以及任务的执行效率.目前的设计是，如果是重量级任务，则需在任务执行结束后，释放内存。调用系统的clear方法，清除内存。||
 |hidden_task|bool|False|是否隐藏任务，隐藏的任务将不会显示在help表格中|在命令行中依然可以调用（V2.2.2开始支持）|
 
-
-
 [^2]:后续任务可以是主任务，也可以是子任务，但子任务必须从后续任务这里启动
 
 ##### 定时设置<a name="ds"></a>
@@ -339,8 +337,6 @@ subcheck2-->|no|e
 ### AsteriskHttpTask
 
 AsteriskHttpTask基于AsteriskTask扩展了对http api获取数据的能力，对于大数据业务处理，深度学习与模型训练有极大的帮助。我们需要先了解以下UML类图。
-
-
 
 其任务执行的流程如下：
 
@@ -429,7 +425,7 @@ AsteriskLinearModelTask是线性回归模型的基类，其继承自AsteriskTask
 
 |方法名|参数说明|方法说明|备注|
 |:---|:---|:---|:---:|
-|framework_setup|bool|False|模型的训练准备工作||
+|framework_setup|bool|False|模型的训练准备工作|
 |collect_data|无参数|该方法需要在run()中调用，根据任务的具体需要来执行。|注意：training_data,test_data这两个对象属性在init方法中通过该方法获得赋值|
 
 ### AsteriskTrainingTask
@@ -461,7 +457,6 @@ AsteriskTrainingTask是线性回归模型的训练任务，其继承自AsteriskL
 |training|无参数|对准备好的数据进行训练|该方法需要在run()中调用，根据任务的具体需要来执行。|
 |save_model|无参数|保存训练好的模型|该方法需要在run()中调用，根据任务的具体需要来执行。|
 
-
 ### AsteriskPredictTask
 
 AsteriskPredictTask是线性回归模型的预测任务，其继承自AsteriskLinearModelTask。V2.2.2开始支持。
@@ -486,7 +481,6 @@ AsteriskPredictTask是线性回归模型的预测任务，其继承自AsteriskLi
 ## ORM支持
 
 自V2.2.0版起，基于SqlAlchemy，支持ORM的方式来管理数据库。Asterisk在SqlAlchemy的基础上，提供了一些简单的操作，方便开发人员使用。
-
 
 ### 扩展特性
 
@@ -572,7 +566,6 @@ success_print('删除完成')
 
 当然也可以直接使用asterisktask.lib.orm包里的delete函数，效果与直接使用AsteriskSession的delete方法一致。
 
-
 ### 数据库相关配置
 
 目前在AppConfig中没有增加固定的配置，但可以自定义配置。
@@ -618,7 +611,7 @@ Asterisk-Task会在后续版本中增加固定的配置，以方便用户使用�
 |default_task|Y|根据命令自动生成|Y|任务启动后的默认调用任务|建议工程生成后自行修改|
 |init_task|Y|根据命令自动生成|Y|工程启动后的初始化任务|建议工程生成后自行修改,该任务只执行一次，主要用于工程启动后建立表结果等一次性setup的任务，自V2.2.0版后支持|
 |app_version|Y|0.0.1|Y|工程版本号|建议工程生成后自行修改|
-|prompt|Y|根据命令自动生成|Y|可根据需要修改|
+|prompt|Y|根据命令自动生成|Y|可根据需要修改||
 |connection_timeout|Y|30|Y|http请求的超时限制，默认为30秒|建议不要修改|
 |tasks|Y|自动生成范例|Y|见[tasks配置说明](#tasks)|后续版本将不断优化调整|
 |version|N|Asterisk-Task的版本|Y|Asterisk-Task的版本号，依据安装的包的版本|内置属性不可修改|
@@ -706,6 +699,7 @@ __提示__:
         "log_format":"%(asctime)s - %(levelname)s - %(message)s"
     }
 ```
+
 详见配置请参考`python`内置工具[logging](https://docs.python.org/3/library/logging.html#module-logging)在线文档
 
 ## 命令行<a name="cl"></a>
@@ -737,9 +731,9 @@ options:
   -debug D    -debug=True时将打印调试信息，即执行dprint()；默认为True,即打印调试信息。
 ```
 
-__注意__
-* -gui 参数暂时没有实现GUI，预计后期将
+__注意:__
 
+* -gui 参数暂时没有实现GUI，预计后期将
 
 #### 软件内置命令
 
