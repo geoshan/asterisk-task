@@ -15,6 +15,12 @@ class AsteriskModel(DeclarativeBase):
     created_at: Mapped[int] = mapped_column(Integer(), default=int(time.time())) # 创建时间的unix时间戳
     updated_at: Mapped[int] = mapped_column(Integer(), default=int(time.time())) # 更新时间的unix时间戳
 
+    # 设置表的的默认charset和collate
+    __table_args__ = {
+        'mysql_charset': 'utf8mb4',
+        'mysql_collate': 'utf8mb4_unicode_ci'
+    }
+
 
 class AsteriskSession(Session):
     '''

@@ -70,7 +70,8 @@ class TaskManager():
             checker = ae.encrypt(f'{init_task}{create_time}')
             if(fp.read() != checker):
                 wprint('初始化任务文件被篡改，重新初始化。')
-                self.exec_task(AppConfig['init_task'])
+                fp.close()
+                raise FileNotFoundError
             fp.close()
             
         except FileNotFoundError:
