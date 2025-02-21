@@ -1,7 +1,9 @@
 from sqlalchemy.orm import DeclarativeBase,Session
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
-from sqlalchemy import Integer,select as sql_select,update
+from sqlalchemy import Integer,select as sql_select,update,Boolean,TIMESTAMP
+from sqlalchemy.sql import func,text
+from datetime import datetime
 import time
 
 class AsteriskModel(DeclarativeBase):
@@ -11,9 +13,9 @@ class AsteriskModel(DeclarativeBase):
     必须将数据库表的软删除与实际删除分开，软删除只是将is_deleted字段置为True
     '''
     id: Mapped[int] = mapped_column(primary_key=True)
-    is_deleted: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[int] = mapped_column(Integer(), default=int(time.time())) # 创建时间的unix时间戳
-    updated_at: Mapped[int] = mapped_column(Integer(), default=int(time.time())) # 更新时间的unix时间戳
+    create_time: Mapped[int] = mapped_column(Integer(), default=int(time.time())) # 创建时间的unix时间戳
+    update_time: Mapped[int] = mapped_column(Integer(), default=int(time.time())) # 更新时间的unix时间戳
+    delete_time: Mapped[int] = mapped_column(Integer(), nullable=True) # 删除时间
 
     # 设置表的的默认charset和collate
     __table_args__ = {
@@ -36,7 +38,7 @@ class AsteriskSession(Session):
         '''
         if type(instance) == list:
             for i in instance:
-                i.is_deleted = True
+                i.delete_time = int(time.time())
                 self.add(i)
         else:
             instance.is_deleted = True
@@ -45,8 +47,7 @@ class AsteriskSession(Session):
     def __enter__(self):
         return self
 
-    def __exit__(self):
-        self.close()
+    
 
 
 
@@ -56,10 +57,10 @@ def select(*args, **kwargs):
     s = sql_select(*args, **kwargs)
     for i in args:
         if hasattr(i,'is_deleted'):
-            s = s.where(i.is_deleted == False)
+            s = s.where(i.delete_time is None)
     return s
 
 def delete(table:AsteriskModel):
     '''
     重写delete方法，使得默认删除时，不删除数据，而是将is_deleted字段置为True'''
-    return update(table).values(is_deleted=True)
+    return update(table).values(delete_time=int(time.time()))
