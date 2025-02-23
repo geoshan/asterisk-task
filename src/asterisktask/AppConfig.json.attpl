@@ -1,5 +1,6 @@
 {
     "app_name":"{project_name}",
+    "dist_type":"dev",
     "app_description":"{project_name} description",
     "app_author":"Unknown",
     "app_email":"unknown@abc.com",
