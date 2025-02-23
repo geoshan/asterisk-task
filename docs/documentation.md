@@ -621,6 +621,22 @@ Asterisk-Task会在后续版本中增加固定的配置，以方便用户使用�
 |title_text_file|N|使用Asterisk-Task默认配置|Y|可在AppConfig.json所在目录添加title.attpl文件，详见[制作logo文件](#logo)||
 |errors|N|使用Asterisk-Task默认配置|Y|错误的定义，主要是针对http api的连机错误,详见[error定义](#errors)|如自定义后，默认定义将被覆盖|
 
+### AppConfig的默认配置参数
+
+|字段名|默认值|说明|备注|
+|:---|:---:|:---:|:---:|
+|version|Asterisk-Task的版本|Asterisk-Task的版本号，依据安装的包的版本|内置属性不可修改|
+|dist_type|dev|当然版本的状态，dev代表开发版；RC代表Release Candidate。空代表正式版|内置属性不可修改，V3.0以后才提供|
+|debug|1|工程的debug状态，来决定是否输出dprint()的内容|软件正式发布时可修改为0|
+|prompt|Asterisk-Task运行后的提示符|可根据需要修改||
+|log|使用Asterisk-Task默认配置|日志的配置信息，详见[日志](#log)|建议不要修改|
+|log_level|DEBUG|日志的级别|DEBUG,INFO,WARNING,ERROR,CRITICAL|
+|log_file|asterisk.log|日志文件的名称|建议不要修改|
+|connection_timeout|30|http请求的超时限制，默认为30秒|建议不要修改|
+|logo_text_file|使用Asterisk-Task默认配置|可在AppConfig.json所在目录添加logo.attpl文件，详见[制作logo文件](#logo)|建议不要修改|
+|title_text_file|使用Asterisk-Task默认配置|可在AppConfig.json所在目录添加title.attpl文件，详见[制作logo文件](#logo)|建议不要修改|
+|errors|使用Asterisk-Task默认配置|错误的定义，主要是针对http api的连机错误,详见[error定义](#errors)|如自定义后，默认定义将被覆盖|
+
 #### tasks配置说明<a name="tasks"></a>
 
 以下是一个范例

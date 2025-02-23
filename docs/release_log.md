@@ -1,21 +1,22 @@
 # Asterisk-Task发布日志
 
-## V3.0.0(计划开发中)
+## V3.0.0(开发中)
 
 ### V3.0.0 build新功能
 
 * 完全移除V1.0的TaskEngine以及相关的子类支持 √
 * 完全移除TaskManager对V1.0的TaskEngine的支持√
+* 支持多语言
 * Task的类属性可从AppConfig.json中读取改为类属性的动态加载
 * 增加ORM的数据源配置支持
 * 优化AI相关的任务类的实现
 * 分布式任务的支持
-* 支持多语言
 
 ### V3.0.0 缺陷修复以及优化
 
 * 初始.initat文件修改后，重新初始化的流程错误
 * 设置orm表的默认charset和collation，并修改create_time,update_time的默认字段名称，修改了软删除的默认字段名称。
+* AppConfig.json中，增加了dist_type属性，用于提示目前版本的发型状态，如：开发版、测试版、正式版等。当dist_type为空时，表示正式版
 
 ## V2.2.0（最新发布）
 
