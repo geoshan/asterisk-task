@@ -658,7 +658,7 @@ Asterisk-Task会在后续版本中增加固定的配置，以方便用户使用�
     }
 ```
 
-__提示__: password字段为加密后的密码，可通过Asterisk-Security进行加密。请勿在此填写密码明文。
+由于这是为兼容Asterisk-Task V1.X而保留的，这里不做详细介绍
 
 #### 数据库相关配置<a name="data_sources"></a>
 
@@ -682,8 +682,7 @@ __提示__: password字段为加密后的密码，可通过Asterisk-Security进�
     }
 ```
 
-由于这是为兼容Asterisk-Task V1.X而保留的，这里不做详细介绍
-
+__提示__: password字段为加密后的密码，可通过Asterisk-Security进行加密。请勿在此填写密码明文。
 
 #### 如何制作logo文件 <a name="logo"></a>
 
