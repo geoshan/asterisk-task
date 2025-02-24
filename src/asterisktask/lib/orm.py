@@ -3,8 +3,8 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy import Integer,select as sql_select,update,Boolean,TIMESTAMP
 from sqlalchemy.sql import func,text
-from datetime import datetime
 import time
+from asterisktask.setup.setting import AppConfig
 
 class AsteriskModel(DeclarativeBase):
     '''
@@ -64,3 +64,38 @@ def delete(table:AsteriskModel):
     '''
     重写delete方法，使得默认删除时，不删除数据，而是将is_deleted字段置为True'''
     return update(table).values(delete_time=int(time.time()))
+
+
+class InterfaceToConnectDataSource:
+    '''
+    一个带有数据源的任务
+    '''
+    
+    
+    def __get_data_source(self)->str:
+        '''
+        获取数据源
+        :return: 数据源
+        '''
+        match AppConfig['data_source'] :
+            case 'mysql':
+                from asterisksecurity.encryption import AsteriskEncrypt
+                a = AsteriskEncrypt(AppConfig['app_name'])
+                pwd = a.decrypt(AppConfig['data_sources']['mysql']['password'])
+                return f"mysql+{AppConfig['data_sources']['mysql']['driver']}://{AppConfig['data_sources']['mysql']['user']}:{pwd}@{AppConfig['data_sources']['mysql']['host']}:{AppConfig['data_sources']['mysql']['port']}/{AppConfig['data_sources']['mysql']['database']}"
+            case 'sqlite':
+                return f"sqlite:///{AppConfig['data_sources']['sqlite']['path']}/{AppConfig['data_sources']['sqlite']['filename']}"
+            case 'postgresql':
+                return 'postgresql'
+            case _:
+                return 'unknown'
+            
+            
+    def _get_engine(self,echo:bool = False):
+        '''
+        获取数据库引擎
+        :param echo: 是否打印SQL语句
+        :return: 数据库引擎
+        '''
+        from sqlalchemy import create_engine
+        return create_engine(self.__get_data_source(),echo=echo)

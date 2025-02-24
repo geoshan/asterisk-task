@@ -636,6 +636,8 @@ Asterisk-Task会在后续版本中增加固定的配置，以方便用户使用�
 |logo_text_file|使用Asterisk-Task默认配置|可在AppConfig.json所在目录添加logo.attpl文件，详见[制作logo文件](#logo)|建议不要修改|
 |title_text_file|使用Asterisk-Task默认配置|可在AppConfig.json所在目录添加title.attpl文件，详见[制作logo文件](#logo)|建议不要修改|
 |errors|使用Asterisk-Task默认配置|错误的定义，主要是针对http api的连机错误,详见[error定义](#errors)|如自定义后，默认定义将被覆盖|
+|data_sources|暂时默认支持mysql与sqlite|数据库的配置信息，详见[数据库相关配置](#data_sources)|在3.0.0正式版后提供|
+|data_source|指向data_sources中具体哪一个source为连接源|数据库的默认配置|在3.0.0正式版后提供|
 
 #### tasks配置说明<a name="tasks"></a>
 
@@ -654,7 +656,30 @@ Asterisk-Task会在后续版本中增加固定的配置，以方便用户使用�
             "use_api":0
         }
     }
+```
 
+__提示__: password字段为加密后的密码，可通过Asterisk-Security进行加密。请勿在此填写密码明文。
+
+#### 数据库相关配置<a name="data_sources"></a>
+
+以下是默认json配置，请根据需要在生成工程的AppConfig.json中进行修改。目前仅支持mysql和sqlite，如有其他需求，再后续版本中增加
+
+```json
+"data_sources":{
+        "mysql":{
+            "driver":"pymysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"spc",
+            "password":"encrypted_by_Asterisk-Security==",
+            "database":"asterisk"
+            },
+        "sqlite":{
+            "description":"sqlite数据源",
+            "path":"data",
+            "filename":"asterisk.db"
+            }
+    }
 ```
 
 由于这是为兼容Asterisk-Task V1.X而保留的，这里不做详细介绍

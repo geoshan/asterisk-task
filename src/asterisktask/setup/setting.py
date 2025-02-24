@@ -46,6 +46,22 @@ except FileNotFoundError:
             "502":"无法连接服务器 ，请请稍后再试。",
             "503":"ChunkedEncodingError -- 请稍后再试",
             "509":"Unfortunately -- 请稍后再试"
-        }
+        },
+        "data_sources":{
+            "mysql":{
+                "driver":"pymysql",
+                "host":"localhost",
+                "port":3306,
+                "user":"spc",
+                "password":"encrypted_by_Asterisk-Security==",
+                "database":"asterisk"
+                },
+            "sqlite":{
+                "description":"sqlite数据源",
+                "path":"data",
+                "filename":"asterisk.db"
+                }
+        },
+        "data_source":"mysql"
     }
 
