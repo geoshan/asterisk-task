@@ -568,30 +568,30 @@ success_print('删除完成')
 
 ### 数据库相关配置
 
-目前在AppConfig中没有增加固定的配置，但可以自定义配置。
-以下是一个范例：
+#### AppConfig.json配置
 
-```json
-"data_sources":{
-    "mysql":{
-        "driver":"pymysql",
-        "host":"localhost",
-        "port":3306,
-        "user":"spc",
-        "password":"USUHoeZB6OTaJZtEx4KEu22IC7snM816OUkGsFvoGERdpE+N8Slh/rLDjQYRWPQ26cN5HZcpAlkE8cbYskqPtg==",
-        "database":"spc"
-        },
-    "sqlite":{
-        "description":"sqlite数据源",
-        "path":"data",
-        "filename":"spc.db"
-        }
-    
-},
-"data_source":"mysql"
+Asterisk-Task会在V3.0.0后续版本中增加固定的配置，以方便用户使用。详细请参考AppConfig.json文件有关 [数据库配置](#data_sources) 。
+
+#### 使用SqlAlchemy连接数据库
+
+Asterisk-Task基于SqlAlchemy，提供了`InterfaceToConnectDataSource` 类用于连接数据库。在定义任务类是，可以多重继承`InterfaceToConnectDataSource`类，以获得数据库连接。
+
+```python
+from asterisktask.lib.orm import InterfaceToConnectDataSource
+from asterisktask.lib.orm import AsteriskSession as Session
+from asterisktask.lib.task import AsteriskTask
+
+class TestTaskWithDataSource(AsteriskTask,InterfaceToConnectDataSource):
+    def __init__(self) -> None:
+        super().__init__()
+        
+        self.engine = self._get_engine()
+        self.session = Session(self.engine)
+    def run(self):
+        success_print('测试数据库连接')
+        self.session.commit()
+        success_print('测试数据库连接完成')
 ```
-
-Asterisk-Task会在后续版本中增加固定的配置，以方便用户使用。
 
 ### 类与函数说明
 
