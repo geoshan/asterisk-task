@@ -56,7 +56,7 @@ def select(*args, **kwargs):
     重写select方法，使得默认查询时，不查询已经删除的数据'''
     s = sql_select(*args, **kwargs)
     for i in args:
-        if hasattr(i,'is_deleted'):
+        if hasattr(i,'delete_time'):
             s = s.where(i.delete_time is None)
     return s
 
