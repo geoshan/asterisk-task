@@ -57,7 +57,7 @@ def select(*args, **kwargs):
     s = sql_select(*args, **kwargs)
     for i in args:
         if hasattr(i,'delete_time'):
-            s = s.where(i.delete_time is None)
+            s = s.where(i.delete_time.is_(None))
     return s
 
 def delete(table:AsteriskModel):
