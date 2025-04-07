@@ -47,9 +47,6 @@ class AsteriskSession(Session):
     def __enter__(self):
         return self
 
-    
-
-
 
 def select(*args, **kwargs):
     '''
