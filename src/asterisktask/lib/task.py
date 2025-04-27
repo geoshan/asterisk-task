@@ -1,10 +1,11 @@
 from abc import ABCMeta,abstractmethod
 from urllib import response
-from asteriskutils.tools import success_print,error_print,wprint,dprint
+from asteriskutils.tools import success_print,error_print,wprint,dprint,iprint
 import json
 from asterisktask.util.tool import AsteriskContext
 from threading import current_thread
 from asterisktask.error.api import ApiMethodNotFoundError
+from asterisktask.setup.setting import AppConfig
 # from asterisktask.lib.nn import AsteriskRegressor
 
 
@@ -60,6 +61,28 @@ class MetaTask(type):
     对于工程的初始化任务，因执行一次，也可以设置为隐藏任务。
     也适用于一些测试任务，不希望在任务列表中显示。
     '''
+
+
+
+    def __new__(cls, class_name:str, class_bases:tuple, class_dict:dict):
+        '''
+        任务的元类,在类创建时进行一些处理
+        1. 读取AppConfig.json文件中的配置，如果对应的任务类设置了一些属性，则会覆盖作为class_dict中的属性
+        Args:
+            class_name(str): 类名
+            class_bases(tuple): 基类
+            class_dict(dict): 类的属性和方法
+        '''
+        # 读取AppConfig.json文件中的配置
+        try:
+            if AppConfig['tasks'].get(class_name):
+                class_dict.update(AppConfig['tasks'][class_name])
+                iprint(f'读取到任务类{class_name}的配置项，并加载到类属性中')
+        except KeyError:
+            wprint('没有找到AppConfig.json文件中的tasks配置项，使用默认配置。')
+
+       
+        return super().__new__(cls, class_name,class_bases,class_dict)
 
     def __init__(self, class_name:str, class_bases:tuple, class_dict:dict):
 

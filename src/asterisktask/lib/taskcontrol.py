@@ -4,7 +4,7 @@ from asterisktask.util.tool import print_prompt,classproperty
 from asteriskutils.tools import dprint,iprint,wprint,error_print
 from asterisktask.lib.task import AsteriskTask
 from asterisksecurity.encryption import AsteriskEncrypt
-# import importlib
+import importlib
 import uuid
 from time import sleep
 from threading import Thread,current_thread
@@ -25,8 +25,8 @@ class TaskManager():
         self.__schedule = False # 当为True时，已开始定时任务，为False时，已停止定时任务
         # 自动导入tasks模块下的task类
         try:   
-            # importlib.import_module(AppConfig['task_module'])
-            __import__(AppConfig['task_module'])
+            importlib.import_module(AppConfig['task_module'])
+            # __import__(AppConfig['task_module'])
             tasks = inspect.getmembers(sys.modules[AppConfig['task_module']], inspect.isclass)
 
             # 去除非tasks模块类
@@ -298,7 +298,7 @@ class TaskManager():
             wprint(f'取消任务[{t.__class__.__name__}]的执行！')
             sleep(0.4)
         except BaseException as e:
-            dprint(e)
+            error_print(e)
             error_print(f'任务[{t.__class__.__name__}]出错!')
 
         if task.__dict__.get('next_context_id'):

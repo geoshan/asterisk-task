@@ -14,6 +14,7 @@ class AsteriskDemoTask(AsteriskTask):
     description = 'First demo task for Asterisk Task V2'
     # next_tasks = ['AsteriskTimerTask']
     def run(self):
+        iprint(f"AppConfig的配置属性demo_property为{self.demo_property}")
         success_print('您已经成功创建项目，并运行在Asterisk-Task第二代框架V{}之上'.format(AppConfig['version']))
 
 

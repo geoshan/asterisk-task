@@ -11,15 +11,8 @@
     "prompt":"{project_name} >",
     "connection_timeout":30,
     "tasks":{
-        "default_task":{
-            "description":"Asterisk-Task 默认任务",
-            "task_class":"AsteriskTestTask"
-        },
-        "test_thread_task":{
-            "description":"测试多线程任务",
-            "task_class":"TestThreadTask",
-            "threading":1,
-            "use_api":0
+        "AsteriskDemoTask":{
+            "demo_property":"demo_value"
         }
     }
     

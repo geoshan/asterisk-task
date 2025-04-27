@@ -167,8 +167,8 @@ def cmd_help() -> None:
     tb.add_row(["start_schedule_tasks","开启定时任务","系统命令"])
     tb.add_row(["stop_schedule_tasks","关闭定时任务","系统命令"])
 
-    for task_item in AppConfig['tasks']:
-        tb.add_row([task_item,AppConfig['tasks'][task_item]['description'],'自定义'])
+    # for task_item in AppConfig['tasks']:
+    #     tb.add_row([task_item,AppConfig['tasks'][task_item]['description'],'自定义'])
         
     from asterisktask.lib.taskcontrol import TaskPool
     from asterisktask.lib.task import AsteriskTask
@@ -176,7 +176,7 @@ def cmd_help() -> None:
         task_class = TaskPool.get_task(task_name)
         if AsteriskTask in task_class.__mro__:
             if not task_class.is_sub_task and not task_class.hidden_task:
-                tb.add_row([task_name,task_class.__dict__.get('description'),'自定义（V2）'])    
+                tb.add_row([task_name,task_class.__dict__.get('description'),'自定义'])    
             '''暂时去掉对于子任务的显示，以便于简化
             else:
                 tb.add_row([f'* {task_name}',task_class.__dict__.get('description'),'自定义（V2），子任务不可单独启动运行'])

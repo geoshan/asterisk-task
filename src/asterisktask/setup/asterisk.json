@@ -38,6 +38,11 @@
             "filename":"asterisk.db"
             }
     },
-    "data_source":"mysql"
+    "data_source":"mysql",
+    "tasks":{
+        "AsteriskDemoTask":{
+            "demo_property":"demo_value"
+        }
+    }
 
 }
