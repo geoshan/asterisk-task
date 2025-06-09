@@ -21,7 +21,11 @@ def load_project_setting():
             AppConfig.get('logo_text_file') if AppConfig.get('logo_text_file') else 'fake.fake')):
             with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), AppConfig.get('logo_text_file')),"r",encoding='utf8') as fp:
                 AppConfig['logo_text'] = fp.read()
-            # dprint(AppConfig)
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), f'lang/{AppConfig["lang"].lower()}.json'),'r',encoding='utf8') as fp:
+            # lang_pack = get_at_lang_pack(AppConfig["lang"].lower())
+            lang = json.load(fp)
+            for k,v in lang.items():
+                lang_pack[k] = v
     except FileNotFoundError:
         wprint('应用目录下的配置文件AppConfig.json不存在，启用默认配置。')
     except json.decoder.JSONDecodeError:

@@ -37,7 +37,7 @@ setup(
         'prettytable>=3.1',
         'schedule>=1.1.0',
         'Deprecated >=1.2.13',
-        'asterisk-utils >= 0.1.3',
+        'asterisk-utils >= 0.1.4',
         'sqlalchemy >=2.0.36'
     ],
     include_package_data=True,

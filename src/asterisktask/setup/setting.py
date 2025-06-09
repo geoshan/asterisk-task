@@ -1,7 +1,7 @@
 import json
 import os
 from asteriskutils.tools import wprint,error_print
-from asteriskutils.setting import AppConfig
+from asteriskutils.setting import AppConfig,lang_pack,get_lang_pack
 
 if  __name__ == "__main__":
     import sys
@@ -10,13 +10,18 @@ if  __name__ == "__main__":
 
 try:
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'asterisk.json'),'r',encoding='utf8') as fp:
-        app_conf_path = json.load(fp)
-        for k,v in app_conf_path.items():
-            AppConfig[k] = v
+        app_conf = json.load(fp)
+        for k,v in app_conf.items():
+            AppConfig[k] = v    
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'title.attpl'),"r",encoding='utf8') as fp:
         AppConfig['title_text'] = fp.read()
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logo.attpl'),"r",encoding='utf8') as fp:
         AppConfig['logo_text'] = fp.read()
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), f'lang/{AppConfig["lang"].lower()}.json'),'r',encoding='utf8') as fp:
+            lang = json.load(fp)
+            # lang_pack = get_lang_pack(AppConfig["lang"].lower())
+            for k,v in lang.items():
+                lang_pack[k] = v
     
 except FileNotFoundError:
     wprint('当前目录下的配置文件asterisk.json不存在，启用默认配置。')
@@ -65,3 +70,23 @@ except FileNotFoundError:
         "data_source":"mysql"
     }
 
+def get_at_lang_pack(locale: str = None) -> dict:
+    """
+    获取语言包
+    :param locale: 语言包的语言代码，默认为AppConfig中的lang配置
+    :return: 返回语言包字典
+    """
+    # from asteriskutils.setting import lang_pack
+    try:
+        if locale is None:
+            locale = AppConfig.get("lang")
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), f'lang/{locale.lower()}.json'),'r',encoding='utf8') as fp:
+            lang = json.load(fp)
+            lang_pack = get_lang_pack(AppConfig["lang"].lower())
+            for k,v in lang.items():
+                lang_pack[k] = v
+        return lang_pack
+    except FileNotFoundError:
+        lang_pack = get_lang_pack('zh-cn')
+        wprint(f'语言包文件lang/{locale.lower()}.json不存在，使用默认语言包。')
+        return lang_pack

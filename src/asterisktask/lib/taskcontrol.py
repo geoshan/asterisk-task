@@ -1,6 +1,7 @@
 import sys,inspect
 from asterisktask.setup.setting import AppConfig
 from asterisktask.util.tool import print_prompt,classproperty
+from asteriskutils.i18n import lang
 from asteriskutils.tools import dprint,iprint,wprint,error_print
 from asterisktask.lib.task import AsteriskTask
 from asterisksecurity.encryption import AsteriskEncrypt
@@ -336,7 +337,8 @@ class TaskManager():
                 subprocess.run(['clear'],text=True,capture_output=False)
             case 'darwin':
                 subprocess.run(['clear'],text=True,capture_output=False)
-        iprint('任务执行完毕，释放内存。')
+        # iprint('任务执行完毕，释放内存。')
+        iprint(f"{lang('task_done_free_memory')}") # 任务执行完毕，释放内存
 
 
     # @deprecated(reason='将逐步由exec_task来替代',version='2.1.0')
