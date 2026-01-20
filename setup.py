@@ -33,7 +33,6 @@ setup(
     # 需要安装的依赖
     install_requires=[
         'requests>=2.31.0',
-        'colorama>=0.4.4',
         'prettytable>=3.1',
         'schedule>=1.1.0',
         'Deprecated >=1.2.13',
