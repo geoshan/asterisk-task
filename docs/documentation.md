@@ -595,6 +595,33 @@ class TestTaskWithDataSource(AsteriskTask,InterfaceToConnectDataSource):
 
 ### 类与函数说明
 
+### 多语言
+
+#### 项目默认语言包配置
+
+在项目名称目录里，会自动生成一个lang目录，用于存放项目默认的语言包。项目生成后，会自动生成2个默认包，分别是zh-cn.json和en-us.json。
+如果需要增加新的语言包，可以在lang目录里添加对应的json文件。例如，增加一个en-us.json文件。
+
+
+#### 如何增加新的Key-Value对
+
+如果需要添加Key-Value对，可以在json文件里添加对应的Key-Value对。例如，增加一个Key-Value对，内容如下：
+
+```json
+{
+    "welcome_{project_name}": "欢迎使用{project_name}！"
+}
+
+```
+
+#### 如何在代码里使用新的Key-Value对
+
+在代码里使用新的Key-Value对，需要在代码里添加对应的Key-Value对。，例如：
+
+```python
+iprint(lang('welcome_{project_name}'))
+```
+
 ## 工程配置
 
 在运行`atnewapp`命令后生成的同名目录中，软件为工程自动生成了一个配置文件AppConfig.json文件
@@ -641,6 +668,8 @@ class TestTaskWithDataSource(AsteriskTask,InterfaceToConnectDataSource):
 
 #### tasks配置说明<a name="tasks"></a>
 
+__通常情况下，task类的属性可以在类定义文件中设定，自V3.0版本后，在tasks里可以自定义类属性。类在被new时，系统会自动检查tasks，若tasks中自定义了类属性，则自动加载自定义类属性，覆盖默认类属性。__
+
 以下是一个范例
 
 ```json
@@ -658,7 +687,6 @@ class TestTaskWithDataSource(AsteriskTask,InterfaceToConnectDataSource):
     }
 ```
 
-由于这是为兼容Asterisk-Task V1.X而保留的，这里不做详细介绍
 
 #### 数据库相关配置<a name="data_sources"></a>
 

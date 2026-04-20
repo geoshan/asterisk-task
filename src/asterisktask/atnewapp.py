@@ -53,6 +53,12 @@ def main()->None:
         __add_project_default_files('setup.py.attpl',project_name,is_setup_file=True)
         在后续版本中支持生成setup脚本
         '''
+        # 项目名称目录里创建默认语言包目录
+        print(f'\033[36m正在创建[{project_name}/lang]项目默认语言包...\033[0m')
+        os.mkdir(f'{project_name}/lang')
+        __add_project_default_files('zh-cn.json.attpl',project_name,is_lang_file=True)
+        __add_project_default_files('en-us.json.attpl',project_name,is_lang_file=True)
+
     except FileExistsError:
         # 如果项目名称目录已存在，无法继续
         if os.path.isfile(f'run_{project_name}.py'):
@@ -94,13 +100,15 @@ def __del_file(path):
 
 
 
-def __add_project_default_files(template_filename:str,project_name:str,is_startup_file=False,is_setup_file=False)->None:
+def __add_project_default_files(template_filename:str,project_name:str,is_startup_file=False,is_setup_file=False,is_lang_file = False)->None:
     '''
     创建项目时，需要增加项目目录，以及目录中的默认配置文件等。
     Args:
         template_filename(str):模版文件名，默认路径在asterisktask下
         project_name(str):项目名称
         is_startup_file(bool):是否为项目启动文件的标识，是为启动文件。默认为否
+        is_setup_file:是否为安装包配置文件，默认为否
+        is_lang_file:是否为语言包文件，默认为否
     
     '''
     target_file = template_filename.replace('.attpl','')
@@ -109,6 +117,7 @@ def __add_project_default_files(template_filename:str,project_name:str,is_startu
     txt = txt.replace("{project_name}",project_name)
     fw = open(f'run_{project_name}.py','w',encoding='utf8') if is_startup_file \
         else  open(f'{project_name}_{target_file}','w',encoding='utf8') if is_setup_file \
+        else  open(f'{project_name}/lang/{target_file}','w',encoding='utf8') if is_lang_file \
         else open(f'{project_name}/{target_file}','w',encoding='utf8')
     fw.write(txt)
     fw.close()

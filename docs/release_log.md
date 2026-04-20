@@ -1,13 +1,17 @@
 # Asterisk-Task发布日志
 
-## V3.0.0(开发中)
+## V4.0.0(计划中)
+
+* 分布式任务的支持
+* 支持agent模式
+
+## V3.0.0(即将发布)
 
 ### V3.0.0 build新功能
 
 * 完全移除V1.0的TaskEngine以及相关的子类支持 √
 * Task的类属性可从AppConfig.json中读取改为类属性的动态加载 √
 * 完全移除TaskManager对V1.0的TaskEngine的支持√
-* 分布式任务的支持
 * 优化AI相关的任务类的实现 √
 * 增加ORM的数据源配置支持 √
 * 支持多语言

@@ -1,3 +1,9 @@
 {
-    "task_done_free_memory": "任务完成，释放内存"
+    "task_done_free_memory": "任务完成，释放内存",
+    "command_error": "命令行输入错误！",
+    "current_running_thread": "目前正在运行的线程",
+    "context": "上下文",
+    "welcome_back": "欢迎再次使用",
+    "exit": "退出",
+    "bye": "再见!"
 }

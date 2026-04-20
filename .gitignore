@@ -13,3 +13,5 @@ run_aster*.*
 *.pdparams
 .initat
 .codegpt
+test_at
+run_test* 

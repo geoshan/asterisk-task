@@ -4,6 +4,7 @@ from asterisktask.util.tool import cmd_help,  print_logo, AsteriskContext, print
 from asteriskutils.tools import dprint,iprint,error_print,wprint
 from asterisktask.setup.setting import AppConfig
 import threading
+from asteriskutils.i18n import lang
 
 class Asterisk():
     '''
@@ -54,7 +55,7 @@ class Asterisk():
                         dprint(t.name)
                         print() # 空行            
             print_logo() 
-            iprint(f"欢迎再次使用{AppConfig['app_name']}，再见！")
+            iprint(lang('welcome_back')+AppConfig['app_name']+lang('bye'))
             print('\n\n') # 空行  
             # sys.exit()
             
@@ -94,16 +95,16 @@ class Asterisk():
                     self.tm.exec_task(cmd)
             
         except (UnicodeDecodeError):
-            error_print('命令行输入错误！')
+            error_print(lang('command_error'))
         except EOFError:
             pass
         return True
     def __show_threads(self)-> None:
         for t in threading.enumerate():
-            iprint(f'目前正在运行的线程[{t.name}]')
+            iprint(lang('current_running_thread')+f'[{t.name}]')
     def __show_context_keys(self)-> None:
         for k in AsteriskContext.keys():
-            iprint(f'上下文[{k}]')
+            iprint(lang('context')+f'[{k}]')
     def __exit_app(self)-> None:
         AsteriskContext.ison(False) # 取消 AsteriskContext的keepalive状态
         TaskPool.ison(False) # 取消 TaskPool的keepalive状态

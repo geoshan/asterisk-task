@@ -6,7 +6,7 @@ def load_project_setting():
     '''
     在项目运行启动时，先将项目配置参数载入
     '''
-    from asterisktask.setup.setting import AppConfig
+    from asterisktask.setup.setting import AppConfig,lang_pack,get_at_lang_pack
     app_conf_path = os.path.dirname(os.path.abspath(__file__))
     try:
         with open(os.path.join(app_conf_path, 'AppConfig.json'),'r',encoding='utf8') as fp:

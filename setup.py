@@ -63,7 +63,6 @@ setup(
     classifiers=[  # 程序的所属分类列表
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",
-        "License :: OSI Approved :: Apache Software License",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
