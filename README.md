@@ -15,15 +15,14 @@
 详细可以参考[github版发布日志](https://github.com/geoshan/asterisk-task/blob/master/docs/release_log.md)
 技术文档参考[Documentation](https://github.com/geoshan/asterisk-task/blob/master/docs/documentation.md)
 
-### 最新V2.2.0
+### 最新V3.0.0
 
-* 增加AI模型训练的内置任务
-* 完全移除util模块中的mail包
-* 增加基于SQLAlchemy的ORM支持
-* 通过配置快速配置数据库连接
-* 增加工程初始化任务，只执行一次
-* 增加任务的隐藏任务属性。对于初始化任务因只执行一次，故可以在任务列表中隐藏
-* AsteriskTask增加update_context方法，以便于多个子任务中更新上下文
+* 完全移除V1.0的TaskEngine以及相关的子类支持
+* Task的类属性可从AppConfig.json中读取改为类属性的动态加载
+* 完全移除TaskManager对V1.0的TaskEngine的支持
+* 优化AI相关的任务类的实现
+* 增加ORM的数据源配置支持
+* 支持多语言
 
 ### 软件架构
 
