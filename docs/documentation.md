@@ -654,6 +654,7 @@ iprint(lang('welcome_{project_name}'))
 |:---|:---:|:---:|:---:|
 |version|Asterisk-Task的版本|Asterisk-Task的版本号，依据安装的包的版本|内置属性不可修改|
 |dist_type|dev|当然版本的状态，dev代表开发版；RC代表Release Candidate。空代表正式版|内置属性不可修改，V3.0以后才提供|
+|lang|zh-cn|工程的语言包，默认为zh-cn|建议工程生成后自行修改|
 |debug|1|工程的debug状态，来决定是否输出dprint()的内容|软件正式发布时可修改为0|
 |prompt|Asterisk-Task运行后的提示符|可根据需要修改||
 |log|使用Asterisk-Task默认配置|日志的配置信息，详见[日志](#log)|建议不要修改|
