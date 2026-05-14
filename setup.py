@@ -37,7 +37,9 @@ setup(
         'schedule>=1.1.0',
         'Deprecated >=1.2.13',
         'asterisk-utils >= 0.1.4',
-        'sqlalchemy >=2.0.36'
+        'sqlalchemy >=2.0.36',
+        'asterisk-security >= 0.1.5',
+        'chinese_calendar >= 1.11.0'
     ],
     include_package_data=True,
 
